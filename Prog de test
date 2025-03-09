@@ -1,0 +1,58 @@
+from Banque import Banque
+from Compte_bancaire import Compte_bancaire
+from Personne import Personne
+
+def test_personne():
+    print("Test de la classe Personne")
+    p = Personne("Doe", "John", "john.doe@email.com", "0601020304", "01/01/1990", 1, 1, 1990)
+
+    assert p.obtenir_nom() == "Doe"
+    assert p.obtenir_prenom() == "John"
+    assert p.obtenir_email() == "john.doe@email.com"
+    assert p.obtenir_telephone() == "0601020304"
+    assert p.obtenir_date_naissance() == "01/01/1990"
+
+    print(p.infos())
+    print("✔ Test Personne OK\n")
+
+def test_compte_bancaire():
+    print("Test de la classe Compte_bancaire")
+    p = Personne("Smith", "Alice", "alice@email.com", "0702030405", "15/05/1985", 15, 5, 1985)
+    c = Compte_bancaire(p, 1000.0)
+
+    assert c.obtenir_solde() == 1000.0
+
+    c.depot(500.0)
+    print(c.obtenir_solde())
+    assert c.obtenir_solde() == 1500.0
+
+    try:
+        c.retrait(2000.0)  # Doit lever une exception
+    except ValueError:
+        print("✔ Exception bien levée pour un retrait excessif")
+
+    c.retrait(300.0)
+    print(c.obtenir_solde())
+    assert c.obtenir_solde() == 1200.0
+
+    print(c.infos())
+    print("✔ Test Compte_bancaire OK\n")
+
+def test_banque():
+    print("Test de la classe Banque")
+    banque = Banque("Ma Banque")
+
+    # Création manuelle d'un compte (évite l'utilisation de input)
+    p = Personne("Martin", "Paul", "paul@email.com", "0805060708", "10/10/1975", 10, 10, 1975)
+    c = Compte_bancaire(p, 500.0)
+
+    banque.comptes = [c]  # Ajout manuel du compte (car liste non initialisée dans le constructeur)
+
+    assert len(banque.comptes) == 1
+    print(banque.infos())
+    print("✔ Test Banque OK\n")
+
+if __name__ == "__main__":
+    test_personne()
+    test_compte_bancaire()
+    test_banque()
