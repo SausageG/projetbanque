@@ -1,6 +1,5 @@
 from Personne import Personne
 
-
 class Compte_bancaire():
     """
     Définition d'un compte bancaire.
@@ -15,54 +14,56 @@ class Compte_bancaire():
         Solde du compte. Initialisé à la création de l'objet.
     """
 
-    def __init__(self, proprietaire: Personne, montant_initial: float) -> None:
+    def __init__(self, proprietaire, montant_initial):
         """
         Initialisation des attributs.
         """
         self.proprietaire = proprietaire
-        self.montant_init = montant_initial
-
+        self.identifiant = self.determine_id(proprietaire)
+        self.solde = montant_initial
 
     @staticmethod
-    def determine_id(proprietaire: Personne) -> int:
+    def determine_id(proprietaire):
         """
-        Détermine l'identifiant du compte aléatoirement à partir du
+        Détermine l'identifiant du compte à partir du
         nom et du prénom du propriétaire.
-        NB : Possibilité de s'inspirer du MD5, faites une recherche sur les fonctions de hachage, soyez créatifs.
-
-        Méthode statique
         """
+        identite = proprietaire.nom + proprietaire.prenom
+        return len(identite) * 12345 % 10**8
 
-
-    def obtenir_solde(self) -> float:
+    def obtenir_solde(self):
         """
         Retourne le solde du compte.
         """
-        return self.montant_init
+        return self.solde
 
-
-    def depot(self, montant: float) -> None:
+    def depot(self, montant):
         """
         Ajoute montant au solde
         """
+        if montant > 0:
+            self.solde += montant
+        else:
+            print("Le montant du dépôt doit être positif")
 
-
-    def retrait(self, montant: float) -> None:
+    def retrait(self, montant):
         """
-        Retire le montant montant du solde à la condition qu'il y ait suffisamment d'argent.
-        Une exception de type ValueError est levée si le montant est trop important
+        Retire le montant du solde à la condition qu'il y ait suffisamment d'argent.
         """
+        if montant <= 0:
+            print("Le montant du retrait doit être positif")
+            return None
+        if montant > self.solde:
+            print("Fonds insuffisants")
+            return None
+        self.solde -= montant
 
 
-    def infos(self) -> str:
+    def infos(self):
         """
         Informations sur le compte.
         """
-        chaine = """
-        Compte numéro : {}
-        Solde : {}
-        """.format(self.identifiant, self.solde)
-
-        chaine = chaine + self.proprietaire.infos()
+        chaine = " Compte numéro : {} / Solde : {}".format(self.identifiant, self.solde)
+        chaine += self.proprietaire.infos()
 
         return chaine
